@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Urban Telemetry Dashboard 📡
 
-## Getting Started
+A real-time, end-to-end IoT data ingestion and visualization platform for urban sensor networks. This project simulates a fleet of air quality sensors (PM2.5) across South Tangerang, providing a secure, automated pipeline to collect, store, and visualize environmental data.
 
-First, run the development server:
+## 🚀 Key Engineering Highlights
+* **IoT Data Pipeline**: End-to-end ingestion from a Python-based hardware simulator to a cloud-hosted database.
+* **Secure API Ingestion**: Implemented a "Bouncer" security layer using Bearer token authentication to prevent unauthorized data injection.
+* **Automated Data Lifecycle**: Built a "Janitor" service using Prisma to automate database cleanup, ensuring system stability on free-tier cloud resources.
+* **Reactive Frontend**: Real-time dashboard using Next.js App Router and Leaflet.js for dynamic geospatial visualization.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🛠 Tech Stack
+* **Framework**: Next.js 15 (App Router)
+* **Database**: MySQL (Aiven)
+* **ORM**: Prisma 7
+* **Visualization**: Leaflet.js, Recharts, Tailwind CSS
+* **Sensor Simulator**: Python (Requests)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🏗 System Architecture
+1.  **Ingestion Layer**: Python-based simulators emit JSON payloads with lat/lng coordinates and air quality values.
+2.  **API Layer**: Next.js REST API handles validation, token authentication, and data routing.
+3.  **Storage Layer**: Prisma performs ACID-compliant transactions to store telemetry data.
+4.  **Presentation Layer**: Server-Side Rendered (SSR) dashboard with real-time auto-refresh and map visualization.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Getting Started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Prerequisites
+* Node.js (v20+)
+* Python (3.10+)
+* Aiven/MySQL Database
