@@ -1,0 +1,16 @@
+generator client {
+  provider = "prisma-client-js" 
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Telemetry {
+  id          Int      @id @default(autoincrement())
+  sensor_id   String
+  lat         Float
+  lng         Float
+  value       Float
+  created_at  DateTime @default(now())
+}

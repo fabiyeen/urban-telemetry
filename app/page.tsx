@@ -1,65 +1,58 @@
-import Image from "next/image";
+import { prisma } from '@/lib/prisma';
+import AutoRefresh from './AutoRefresh';
+import MapWrapper from './MapWrapper'; // We import the wrapper normally now!
 
-export default function Home() {
+export const revalidate = 0;
+
+export default async function Dashboard() {
+  const readings = await prisma.telemetry.findMany({
+    orderBy: { created_at: 'desc' },
+    take: 15, 
+  });
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-slate-950 text-slate-200 p-8">
+      <AutoRefresh interval={3000} />
+      
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-3xl font-bold text-white mb-2">
+          Urban Telemetry Dashboard
+        </h1>
+        <p className="text-slate-400 mb-8">Live sensor map & data from South Tangerang.</p>
+
+        {/* 🗺️ The newly wrapped map! */}
+        <MapWrapper readings={readings} />
+
+        {/* 📊 The Table goes below */}
+        <div className="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden shadow-xl">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-950 border-b border-slate-800 text-sm uppercase tracking-wider text-slate-400">
+                <th className="p-4">Sensor ID</th>
+                <th className="p-4">Latitude</th>
+                <th className="p-4">Longitude</th>
+                <th className="p-4 text-emerald-400">PM2.5 Value</th>
+                <th className="p-4">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              {readings.slice(0, 10).map((reading) => (
+                <tr key={reading.id} className="border-b border-slate-800/50 hover:bg-slate-800/50 transition-colors">
+                  <td className="p-4 font-mono text-sm text-blue-400">{reading.sensor_id}</td>
+                  <td className="p-4 text-sm">{reading.lat.toFixed(4)}</td>
+                  <td className="p-4 text-sm">{reading.lng.toFixed(4)}</td>
+                  <td className="p-4 text-sm font-bold text-emerald-400">
+                    {reading.value.toFixed(2)}
+                  </td>
+                  <td className="p-4 text-sm text-slate-500">
+                    {new Date(reading.created_at).toLocaleTimeString('id-ID')}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
