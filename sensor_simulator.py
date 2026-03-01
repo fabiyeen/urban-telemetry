@@ -2,7 +2,7 @@ import requests
 import time
 import random
 
-API_URL = "https://urban-telemetry.vercel.app/"
+API_URL = "https://urban-telemetry.vercel.app/api/telemetry"
 
 # 🔑 The Python script must now present the exact same secret key to get in
 HEADERS = {
